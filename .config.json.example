@@ -1,0 +1,7 @@
+{
+  "authorization_endpoint": "https://iam.viessmann-climatesolutions.com/idp/v3/authorize",
+  "token_endpoint": "https://iam.viessmann-climatesolutions.com/idp/v3/token",
+  "client_id": "your_client_id_here",
+  "redirect_uri": "http://localhost:4200",
+  "refresh_token_scope": "IoT User offline_access"
+}

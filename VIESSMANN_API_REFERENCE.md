@@ -122,9 +122,9 @@ print(response.json())
 
 Once authenticated, you can access:
 
-- **Installations**: `GET https://api.viessmann.com/iot/v1/equipment/installations`
-- **Gateways**: `GET https://api.viessmann.com/iot/v1/equipment/gateways`
-- **Devices**: `GET https://api.viessmann.com/iot/v1/equipment/installations/{installationId}/gateways/{gatewaySerial}/devices`
-- **Features**: `GET https://api.viessmann.com/iot/v1/equipment/installations/{installationId}/gateways/{gatewaySerial}/devices/{deviceId}/features`
+- **Installations**: `GET https://api.viessmann.com/iot/v2/equipment/installations`
+- **Gateways**: `GET https://api.viessmann.com/iot/v2/equipment/gateways`
+- **Devices**: `GET https://api.viessmann.com/iot/v2/equipment/installations/{installationId}/gateways/{gatewaySerial}/devices`
+- **Features**: `GET https://api.viessmann.com/iot/v2/equipment/installations/{installationId}/gateways/{gatewaySerial}/devices/{deviceId}/features`
 
 All requests require the `Authorization: Bearer {access_token}` header.

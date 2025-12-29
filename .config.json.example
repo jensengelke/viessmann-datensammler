@@ -3,5 +3,19 @@
   "token_endpoint": "https://iam.viessmann-climatesolutions.com/idp/v3/token",
   "client_id": "your_client_id_here",
   "redirect_uri": "http://localhost:4200",
-  "refresh_token_scope": "IoT User offline_access"
+  "refresh_token_scope": "IoT User offline_access",
+  "installation_id": "your_installation_id_here",
+  "gateway_id": "your_gateway_id_here",
+  "device_id": "your_device_id_here", 
+  "installed": {
+    "client_id": "your_client_id_here",
+    "project_id": "your_project_id_here",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "your_client_secret_here",
+    "redirect_uris": [
+      "http://localhost"
+    ]
+  }
 }

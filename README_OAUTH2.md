@@ -46,7 +46,10 @@ Create a `.config.json` file in the same directory as the script with your OAuth
   "token_endpoint": "https://iam.viessmann-climatesolutions.com/idp/v3/token",
   "client_id": "your_client_id_here",
   "redirect_uri": "http://localhost:4200",
-  "refresh_token_scope": "IoT User offline_access"
+  "refresh_token_scope": "IoT User offline_access",
+  "installation_id": "your_installation_id_here",
+  "gateway_id": "your_gateway_id_here",
+  "device_id": "your_device_id_here"
 }
 ```
 
@@ -57,6 +60,12 @@ Create a `.config.json` file in the same directory as the script with your OAuth
 - `client_id`: Your OAuth2 client ID
 - `redirect_uri`: Must be `http://localhost:4200` (or configure the port as needed)
 - `scope` or `refresh_token_scope`: Space-separated list of OAuth2 scopes
+
+### Required Fields for Viessmann API (collect-data.py)
+
+- `installation_id`: Your Viessmann installation ID
+- `gateway_id`: Your Viessmann gateway ID
+- `device_id`: Your Viessmann device ID
 
 ### Optional Fields
 

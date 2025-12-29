@@ -47,7 +47,11 @@ class OAuth2Client:
                 'authorization_endpoint',
                 'token_endpoint',
                 'client_id',
-                'redirect_uri'
+                'redirect_uri',
+                'installation_id',
+                'gateway_id',
+                'device_id',
+                'google_sheet_id'
             ]
             
             for field in required_fields:

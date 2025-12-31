@@ -169,6 +169,8 @@ def main():
             normal_temperature = None
             vorlauf_temperature = None
             vorlauf_secondary_temperature = None
+            reduce_heating = None
+            reduce_heating_temperature = None
             if 'data' in data:
                 for feature in data['data']:
                     if feature.get('feature') == 'heating.sensors.temperature.outside':
@@ -221,6 +223,17 @@ def main():
                         except (KeyError, TypeError) as e:
                             print(f"Error extracting vorlauf secondary temperature: {e}")
                             continue
+                    if feature.get('feature') == 'heating.circuits.0.operating.programs.reducedHeating':
+                        try:
+                            reduce_heating = feature['properties']['active']['value']
+                            print(f"\nReduce Heating: {reduce_heating}")
+                            if reduce_heating:
+                                reduce_heating_temperature = feature['properties']['temperature']['value']
+                                print(f"\nReduce Heating Temperature: {reduce_heating_temperature}")
+                            continue
+                        except (KeyError, TypeError) as e:
+                            print(f"Error extracting reduce heating: {e}")
+                            continue
                 if outside_temperature is None:
                     print("\nWarning: Could not find 'heating.sensors.temperature.outside' feature")
                 if curve_slope is None:
@@ -235,6 +248,10 @@ def main():
                     print("\nWarning: Could not find 'heating.boiler.sensors.temperature.commonSupply' feature")
                 if vorlauf_secondary_temperature is None:
                     print("\nWarning: Could not find 'heating.secondaryCircuit.sensors.temperature.supply' feature")
+                if reduce_heating is None:
+                    print("\nWarning: Could not find 'heating.circuits.0.operating.programs.reducedHeating' feature")
+                if reduce_heating_temperature is None:
+                    print("\nWarning: Could not find 'heating.circuits.0.operating.programs.reducedHeating' feature")
             else:
                 print("\nWarning: Response does not contain 'data' array")
         else:
@@ -284,12 +301,16 @@ def main():
         current_date = now.strftime('%d.%m.%Y')
         current_time = now.strftime('%H:%M:%S')
         
+        if reduce_heating == True:
+            print(f"\nReduce Heating: {reduce_heating}")
+            print(f"\nReduce Heating Temperature: {reduce_heating_temperature}")
+        
         new_row = [
             current_date,
             current_time,
             outside_temperature if outside_temperature is not None else '',
-            comfort_temperature if comfort_temperature is not None else '',
-            normal_temperature if normal_temperature is not None else '',
+            comfort_temperature if reduce_heating == False else 'abgesenkt',
+            reduce_heating_temperature if reduce_heating == True else 'nicht aktiv',
             curve_slope if curve_slope is not None else '',
             curve_shift if curve_shift is not None else '',
             vorlauf_temperature if vorlauf_temperature is not None else '',

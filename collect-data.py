@@ -273,8 +273,13 @@ def main():
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    print(f"Error refreshing Google token: {e}")
+                    creds = None
+            
+            if not creds:
                 flow = InstalledAppFlow.from_client_secrets_file(".config.json", SCOPES)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run

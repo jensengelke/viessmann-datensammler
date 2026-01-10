@@ -289,6 +289,13 @@ def main():
         google_sheet_id = client.config.get('google_sheet_id')
         service = build("sheets", "v4", credentials=creds)
         
+        # Get sheet ID for 'Messungen' to ensure we're targeting the correct one
+        spreadsheet_metadata = service.spreadsheets().get(spreadsheetId=google_sheet_id).execute()
+        target_sheet_id = 0
+        for s in spreadsheet_metadata.get('sheets', []):
+            if s.get('properties', {}).get('title') == 'Messungen':
+                target_sheet_id = s.get('properties', {}).get('sheetId')
+                break
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -330,7 +337,7 @@ def main():
             'requests': [{
                 'insertDimension': {
                     'range': {
-                        'sheetId': 0,  # Assuming first sheet, adjust if needed
+                        'sheetId': target_sheet_id,
                         'dimension': 'ROWS',
                         'startIndex': 1,  # Row 2 (0-indexed)
                         'endIndex': 2
@@ -358,6 +365,55 @@ def main():
         
         print(f"Data written to row 2 successfully")
         print(f"Date: {current_date}, Time: {current_time}")
+
+        # Process remainder of the sheet starting from row 16
+        print("Processing rows from 16 onwards for cleanup...")
+        cleanup_range = "'Messungen'!A16:L"
+        cleanup_result = sheet.values().get(
+            spreadsheetId=google_sheet_id,
+            range=cleanup_range
+        ).execute()
+        
+        cleanup_values = cleanup_result.get("values", [])
+        if cleanup_values:
+            indices_to_delete = []
+            # Row 16 in sheet is index 0 in cleanup_values
+            for i, row in enumerate(cleanup_values):
+                # Columns J, K, L are indices 9, 10, 11 (0-indexed)
+                val_j = row[9] if len(row) > 9 else ""
+                val_k = row[10] if len(row) > 10 else ""
+                val_l = row[11] if len(row) > 11 else ""
+                
+                # Check if columns J, K, and L are all empty (or just whitespace)
+                if not str(val_j).strip() and not str(val_k).strip() and not str(val_l).strip():
+                    indices_to_delete.append(15 + i) # 15 is 0-indexed row 16
+            
+            if indices_to_delete:
+                print(f"Found {len(indices_to_delete)} rows to delete.")
+                delete_requests = []
+                # Sort indices in descending order to avoid shifting during deletion
+                for idx in sorted(indices_to_delete, reverse=True):
+                    delete_requests.append({
+                        'deleteDimension': {
+                            'range': {
+                                'sheetId': target_sheet_id,
+                                'dimension': 'ROWS',
+                                'startIndex': idx,
+                                'endIndex': idx + 1
+                            }
+                        }
+                    })
+                
+                if delete_requests:
+                    sheet.batchUpdate(
+                        spreadsheetId=google_sheet_id,
+                        body={'requests': delete_requests}
+                    ).execute()
+                    print(f"Successfully deleted {len(delete_requests)} rows.")
+            else:
+                print("No rows found matching deletion criteria starting from row 16.")
+        else:
+            print("No data found from row 16 onwards.")
 
 
     except Exception as e:
